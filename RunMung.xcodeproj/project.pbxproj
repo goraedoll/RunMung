@@ -35,16 +35,6 @@
 			path = RunMung;
 			sourceTree = "<group>";
 		};
-		55A0333C2E716489007E2A06 /* RunMungTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = RunMungTests;
-			sourceTree = "<group>";
-		};
-		55A033462E716489007E2A06 /* RunMungUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = RunMungUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,8 +66,6 @@
 			isa = PBXGroup;
 			children = (
 				55A0332C2E716488007E2A06 /* RunMung */,
-				55A0333C2E716489007E2A06 /* RunMungTests */,
-				55A033462E716489007E2A06 /* RunMungUITests */,
 				55A0332B2E716488007E2A06 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -130,9 +118,6 @@
 			dependencies = (
 				55A0333B2E716489007E2A06 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				55A0333C2E716489007E2A06 /* RunMungTests */,
-			);
 			name = RunMungTests;
 			packageProductDependencies = (
 			);
@@ -152,9 +137,6 @@
 			);
 			dependencies = (
 				55A033452E716489007E2A06 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				55A033462E716489007E2A06 /* RunMungUITests */,
 			);
 			name = RunMungUITests;
 			packageProductDependencies = (
