@@ -10,7 +10,11 @@ import SwiftUI
 struct WalkRecordView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isPaused = true
+    @State private var resetMessage: String? = nil
+    @StateObject private var timerManager = TimerManager() // 시간 상태
+    @StateObject private var distanceTracker = DistanceTracker() // 총 거리 상태
     
+        
     var body: some View {
         ZStack {
             // 배경 (밝은 화이트 → 연코랄 그라데이션)
@@ -41,27 +45,29 @@ struct WalkRecordView: View {
                         Text("페이스")
                             .font(.caption)
                             .foregroundColor(.gray)
-                        Text("6'15\"")
+                        Text(TimeInterval.paceString(time: timerManager.elapsedTime, distance: distanceTracker.totalDistance))
                             .font(.title2).bold()
                             .foregroundColor(.coral)
                     }
                     .frame(maxWidth: .infinity)
                     
-                    VStack {
-                        Text("BPM")
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                        Text("128")
-                            .font(.title2).bold()
-                            .foregroundColor(.coral)
-                    }
-                    .frame(maxWidth: .infinity)
+                    
+                    // 나중에 애플워치 연동까지
+//                    VStack {
+//                        Text("BPM")
+//                            .font(.caption)
+//                            .foregroundColor(.gray)
+//                        Text("128")
+//                            .font(.title2).bold()
+//                            .foregroundColor(.coral)
+//                    }
+//                    .frame(maxWidth: .infinity)
                     
                     VStack {
                         Text("시간")
                             .font(.caption)
                             .foregroundColor(.gray)
-                        Text("00:42:31")
+                        Text(timerManager.formattedTime)
                             .font(.title2).bold()
                             .foregroundColor(.coral)
                     }
@@ -71,39 +77,60 @@ struct WalkRecordView: View {
                 
                 Spacer()
                 
-                // 중간 총 이동거리
+                // 총 이동거리
                 VStack {
-                    Text("5.23")
+                    Text(String(format: "%.2f", distanceTracker.totalDistance))
                         .font(.system(size: 120, weight: .heavy))
                         .foregroundColor(.coral)
                         .italic()
                     Text("키로미터")
                         .font(.system(size: 24, weight: .semibold))
                         .foregroundColor(.gray)
+                    
+                    if let resetMessage = resetMessage {
+                        Text(resetMessage)
+                            .font(.caption)
+                            .foregroundStyle(.gray)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                            .padding(.top, 4)
+                    }
                 }
                 
                 Spacer()
                 
-                // 일시정지 버튼 (원형)
-                Button {
-                    withAnimation(.none) {
+                ZStack {
+                    // 큰 Play/Pause 버튼 (항상 중앙)
+                    Button {
+                        if isPaused {
+                            timerManager.start()
+                            resetMessage = nil
+                        } else {
+                            timerManager.stop()
+                        }
                         isPaused.toggle()
+                    } label: {
+                        Image(systemName: isPaused ? "play.fill" : "pause.fill")
+                            .font(.system(size: 32, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(width: 80, height: 80)
+                            .background(Color.coral)
+                            .clipShape(Circle())
+                            .shadow(radius: 4)
                     }
-                } label: {
-                    Image(systemName: isPaused ? "play.fill" : "pause.fill")
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(.white)
-                        .frame(width: 80, height: 80)
-                        .background(Color.coral)
-                        .clipShape(Circle())
-                        .shadow(radius: 4)
+
+                    // Reset 버튼 (Play/Pause 오른쪽 아래에 붙이기)
+                    ResetButton(isPaused: $isPaused, timerManager: timerManager) { message in
+                        resetMessage = message
+                    }
+                    .offset(x:80, y: 10)
                 }
+
                 
-                // 음악 버튼 (캡슐형)
+                // 지도 보기
                 Button {
-                    print("음악 연결하기 눌림")
+                    print("지도 보기")
                 } label: {
-                    Text("음악 연결하기")
+                    Label("지도 보기", systemImage: "map.fill") // ← SF Symbol 추가
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
@@ -117,6 +144,11 @@ struct WalkRecordView: View {
         }
     }
 }
+
+#Preview("Walk recode preview ") {
+    WalkRecordView()
+}
+
 
 #Preview {
     MainTabView()
