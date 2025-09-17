@@ -11,8 +11,9 @@ struct WalkRecordView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isPaused = true
     @State private var resetMessage: String? = nil
-    @StateObject private var timerManager = TimerManager() // 시간 상태
-    @StateObject private var distanceTracker = DistanceTracker() // 총 거리 상태
+    
+    @EnvironmentObject var timerManager: TimerManager  // 시간 상태
+    @EnvironmentObject var distanceTracker: DistanceTracker // 총 거리 상태 꺼내오기
     
         
     var body: some View {
@@ -89,10 +90,15 @@ struct WalkRecordView: View {
                     
                     if let resetMessage = resetMessage {
                         Text(resetMessage)
-                            .font(.caption)
+                            .id(resetMessage)
+                            .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(.gray)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
+                            .transition(.asymmetric(
+                                insertion: .scale.combined(with: .opacity),
+                                removal: .opacity
+                            ))
                             .padding(.top, 4)
+                            .animation(.easeInOut(duration: 0.3), value: resetMessage)
                     }
                 }
                 
@@ -145,12 +151,9 @@ struct WalkRecordView: View {
     }
 }
 
-#Preview("Walk recode preview ") {
+#Preview("Walk record preview") {
     WalkRecordView()
-}
-
-
-#Preview {
-    MainTabView()
+        .environmentObject(DistanceTracker()) // 객체 주입
+        .environmentObject(TimerManager())
 }
 

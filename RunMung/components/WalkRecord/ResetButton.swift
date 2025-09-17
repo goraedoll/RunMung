@@ -29,19 +29,27 @@ struct ResetButton: View {
                     .scaleEffect(isPressingReset ? 1.3 : 1.0)
                     .animation(.easeInOut(duration: 0.3), value: isPressingReset)
                     .onLongPressGesture(
-                        minimumDuration: 2,
+                        minimumDuration: 3,
                         pressing: { pressing in
                             withAnimation {
                                 isPressingReset = pressing
-                                onMessageChange(pressing ? "초기화하려면 3초 이상 꾹 눌러주세요." : nil)
+                                if pressing {
+                                    onMessageChange("초기화하려면 3초 이상 꾹 눌러주세요.")
+                                }
+                                // pressing=false에서는 메시지를 지우지 않는다
                             }
                         },
                         perform: {
-                            timerManager.reset()
-                            isPaused = true
                             withAnimation {
                                 onMessageChange("초기화 되었습니다.")
                             }
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                timerManager.reset()
+                                isPaused = true
+                            }
+
+                            // 2초 후 메시지 제거
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                 withAnimation {
                                     onMessageChange(nil)
@@ -64,6 +72,8 @@ struct ResetButton: View {
 }
 
 
-#Preview {
+#Preview("Walk record preview") {
     WalkRecordView()
+        .environmentObject(DistanceTracker()) // 프리뷰용 객체 주입
+        .environmentObject(TimerManager()) // 프리뷰용 객체 주입
 }

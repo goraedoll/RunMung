@@ -51,6 +51,10 @@ struct MainTabView: View {
     }
 }
 
-#Preview {
+
+#Preview("MainTabView") {
     MainTabView()
+        .environmentObject(DistanceTracker()) // 프리뷰용 객체 주입
+        .environmentObject(TimerManager()) // 프리뷰용 객체 주입
 }
+
