@@ -11,6 +11,8 @@ struct WalkRecordView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isPaused = true
     @State private var resetMessage: String? = nil
+    @State private var displayedPace: String = "--'--\""
+    @State private var lastUpdatedSecond: Int = 0
     
     @EnvironmentObject var timerManager: TimerManager  // 시간 상태
     @EnvironmentObject var distanceTracker: DistanceTracker // 총 거리 상태 꺼내오기
@@ -46,9 +48,19 @@ struct WalkRecordView: View {
                         Text("페이스")
                             .font(.caption)
                             .foregroundColor(.gray)
-                        Text(TimeInterval.paceString(time: timerManager.elapsedTime, distance: distanceTracker.totalDistance))
+                        Text(displayedPace)
                             .font(.title2).bold()
                             .foregroundColor(.coral)
+                    }
+                    .onReceive(timerManager.$elapsedTime) { time in
+                        let currentSecond = Int(time)
+                        if currentSecond % 10 == 0, currentSecond != lastUpdatedSecond {
+                            displayedPace = TimeInterval.paceString(
+                                time: time,
+                                distance: distanceTracker.totalDistance
+                            )
+                            lastUpdatedSecond = currentSecond
+                        }
                     }
                     .frame(maxWidth: .infinity)
                     
@@ -109,9 +121,11 @@ struct WalkRecordView: View {
                     Button {
                         if isPaused {
                             timerManager.start()
+                            distanceTracker.start()
                             resetMessage = nil
                         } else {
                             timerManager.stop()
+                            distanceTracker.stop()
                         }
                         isPaused.toggle()
                     } label: {
@@ -125,7 +139,7 @@ struct WalkRecordView: View {
                     }
 
                     // Reset 버튼 (Play/Pause 오른쪽 아래에 붙이기)
-                    ResetButton(isPaused: $isPaused, timerManager: timerManager) { message in
+                    ResetButton(isPaused: $isPaused, timerManager: timerManager, distanceTracker: distanceTracker) { message in
                         resetMessage = message
                     }
                     .offset(x:80, y: 10)

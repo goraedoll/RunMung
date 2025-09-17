@@ -13,21 +13,44 @@ class DistanceTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     private var locationManager = CLLocationManager()
     private var lastLocation: CLLocation?
+    private var isTracking: Bool = false // 기록 상태
     
     override init() {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
+    }
+    
+    func start() {
+        lastLocation = nil
+        isTracking = true
         locationManager.startUpdatingLocation()
     }
     
+    func stop() {
+        isTracking = false
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func reset() {
+        stop()
+        totalDistance = 0.0
+        lastLocation = nil
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard isTracking else { return }
         guard let newLocation = locations.last else { return }
         
         if let last = lastLocation {
-            let distance = newLocation.distance(from: last) // 미터 단위
-            totalDistance += distance / 1000.0 // km로 변환
+            // 미터 단위
+            let distance = newLocation.distance(from: last)
+            
+            // 1미터 미만의 작은 변화는 무시
+            if distance > 1 {
+                totalDistance += distance / 1000.0 // km 단위 변환
+            }
         }
         
         lastLocation = newLocation

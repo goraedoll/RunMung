@@ -10,6 +10,7 @@ import SwiftUI
 struct ResetButton: View {
     @Binding var isPaused: Bool
     @ObservedObject var timerManager: TimerManager
+    @ObservedObject var distanceTracker: DistanceTracker
     
     var onMessageChange: (String?) -> Void // 메세지 부모에게 전달
     @State private var isPressingReset = false
@@ -46,6 +47,7 @@ struct ResetButton: View {
 
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 timerManager.reset()
+                                distanceTracker.reset()
                                 isPaused = true
                             }
 
