@@ -7,6 +7,9 @@
 import SwiftUI
 
 public struct HomeActiveButtonView: View {
+    @State private var showWalkRecord = false
+    
+    
     public var body: some View {
         VStack {
             VStack(spacing: 12) {
@@ -25,7 +28,7 @@ public struct HomeActiveButtonView: View {
 
                     // 시작 버튼 (가운데, 크게)
                     Button {
-                        print("시작 눌림")
+                        showWalkRecord = true   // 이동할 페이지
                     } label: {
                         Text("▶︎") // 또는 Image(systemName: "play.fill")
                             .font(.system(size: 40, weight: .bold))
@@ -34,6 +37,10 @@ public struct HomeActiveButtonView: View {
                             .background(Color(red: 1.0, green: 0.5, blue: 0.4)) // #FF7F66
                             .clipShape(Circle())
                             .shadow(radius: 4) // 강조 효과
+                    }
+                    // 전체 뷰 뜨게 하는 방법
+                    .fullScreenCover(isPresented: $showWalkRecord) {
+                        WalkRecordView()
                     }
 
                     // 정보 버튼
