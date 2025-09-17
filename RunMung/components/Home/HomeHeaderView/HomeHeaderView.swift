@@ -23,8 +23,8 @@ struct HomeHeaderView: View {
                 print("즐겨찾기")
             }) {
                 Image(systemName: "star")
-                    .font(.system(size:32))
-                    .foregroundColor(.gray)
+                    .font(.system(size:20, weight: .bold))
+                    .foregroundColor(.gray,)
             }
         }
         .padding(16)

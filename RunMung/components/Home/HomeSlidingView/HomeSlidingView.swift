@@ -43,7 +43,7 @@ struct HomeSlidingView: View {
                                     
                                     // 오른쪽: 텍스트 (2/3)
                                     Text(slide.title)
-                                        .font(.headline)
+                                        .font(.system(size: 18, weight: .light))
                                         .frame(width: geo.size.width * 2/3, height: 100)
                                         .multilineTextAlignment(.center) // 👈 텍스트를 좌우 중앙 정렬
                                 }

@@ -11,7 +11,11 @@ import SwiftUI
 struct RunMungApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()   // 앱 실행 시 가장 먼저 띄우는 화면
+            MainTabView()   // 앱 실행 시 가장 먼저 띄우는 화면
         }
     }
+}
+
+#Preview {
+    MainTabView()
 }

@@ -10,8 +10,11 @@ import CoreLocation
 
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var region = MKCoordinateRegion(
+        // 기본 위치 서울 시청으로 해놓음
         center: CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780),
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        
+        // 이부분을 수정해야 축적 비율이 설정됌
+        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
     )
     private let manager = CLLocationManager()
 
@@ -60,15 +63,8 @@ struct HomeMapView: View {
             UserAnnotation()
 
             // ✅ 커스텀 마커가 필요하면 Marker/Annotation 사용
-            Marker("내 위치", coordinate: locationManager.region.center)
-                .tint(.red)
-            // 또는:
-            // Annotation("내 위치", coordinate: locationManager.region.center) {
-            //     Image(systemName: "mappin.circle.fill")
-            //         .font(.title)
-            //         .foregroundStyle(.red)
-            //         .shadow(radius: 4)
-            // }
+//            Marker("내 위치", coordinate: locationManager.region.center)
+//                .tint(.red)
         }
         // region이 바뀔 때 카메라도 따라가게
         .onReceive(locationManager.$region) { newRegion in
