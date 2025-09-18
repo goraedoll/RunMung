@@ -8,18 +8,14 @@
 import SwiftUI
 
 struct ResetButton: View {
-    @Binding var isPaused: Bool
     @ObservedObject var timerManager: TimerManager
     @ObservedObject var distanceTracker: DistanceTracker
-    
-    var onMessageChange: (String?) -> Void // 메세지 부모에게 전달
+    var onMessageChange: (String?) -> Void
     @State private var isPressingReset = false
-    
     
     var body: some View {
         Group {
-            if isPaused && timerManager.elapsedTime > 0 {
-                // 일시정지 상태 → 리셋 버튼 활성화
+            if timerManager.isPaused && timerManager.elapsedTime > 0 {
                 Image(systemName: "arrow.counterclockwise")
                     .font(.system(size: 20, weight: .heavy))
                     .foregroundColor(.coral)
@@ -37,30 +33,24 @@ struct ResetButton: View {
                                 if pressing {
                                     onMessageChange("초기화하려면 3초 이상 꾹 눌러주세요.")
                                 }
-                                // pressing=false에서는 메시지를 지우지 않는다
                             }
                         },
                         perform: {
-                            
                             timerManager.reset()
                             distanceTracker.reset()
-                            isPaused = true
+                            
+                            // Live Activity 종료
+                            LiveActivityManager.shared.end()
                             
                             withAnimation {
                                 onMessageChange("초기화 되었습니다.")
                             }
-
-
-                            // 2초 후 메시지 제거
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                withAnimation {
-                                    onMessageChange(nil)
-                                }
+                                withAnimation { onMessageChange(nil) }
                             }
                         }
                     )
             } else {
-                // 실행 중 → 잠금 상태
                 Image(systemName: "lock.fill")
                     .font(.system(size: 20, weight: .heavy))
                     .foregroundColor(.gray.opacity(0.8))

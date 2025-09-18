@@ -17,7 +17,13 @@ final class LiveActivityManager {
     func start() {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
         let attributes = TimerAttributes(title: "런닝 타이머")
-        let state = TimerAttributes.ContentState(startDate: Date()) // 지금 시각 저장
+        
+        let state = TimerAttributes.ContentState(
+            startDate: Date(),       // 시작 시각
+            elapsedTime: 0,          // 초기 경과 시간
+            isPaused: false          // 시작했으니 일시정지 아님
+        )
+        
         do {
             let content = ActivityContent(state: state, staleDate: nil)
             activity = try Activity.request(
@@ -30,7 +36,23 @@ final class LiveActivityManager {
         }
     }
 
-    // 업데이트는 필요 없음! startDate만 넘기면 시스템이 알아서 경과 시간 갱신
+    /// 경과 시간 보정해서 Live Activity 업데이트
+    func update(elapsedTime: TimeInterval, isPaused: Bool) {
+        guard let activity else { return }
+        
+        let state = TimerAttributes.ContentState(
+            startDate: isPaused ? nil : Date().addingTimeInterval(-elapsedTime),
+            elapsedTime: elapsedTime,
+            isPaused: isPaused
+        )
+        
+        Task {
+            await activity.update(ActivityContent(state: state, staleDate: nil))
+            print("🔄 Live Activity 업데이트됨 (isPaused=\(isPaused), elapsed=\(elapsedTime))")
+        }
+    }
+
+
     func end() {
         Task {
             await activity?.end(nil, dismissalPolicy: .immediate)

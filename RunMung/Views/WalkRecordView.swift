@@ -10,7 +10,6 @@ import ActivityKit
 
 struct WalkRecordView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var isPaused = true
     @State private var resetMessage: String? = nil
     @State private var displayedPace: String = "--'--\""
     @State private var lastUpdatedSecond: Int = 0
@@ -114,7 +113,7 @@ struct WalkRecordView: View {
                 Spacer()
                 
                 ZStack {
-                    if isPaused && timerManager.elapsedTime > 0 {
+                    if timerManager.isPaused && timerManager.elapsedTime > 0 {
                         Image(systemName: "square.and.arrow.down.fill")
                             .font(.system(size: 20, weight: .heavy))
                             .foregroundColor(.coral)
@@ -142,6 +141,7 @@ struct WalkRecordView: View {
                                         pace: displayedPace
                                     )
                                     
+                                    
                                     modelContext.insert(record)
                                     resetMessage = "기록이 저장되었습니다."
                                     print("저장 완료: \(record)")
@@ -152,12 +152,14 @@ struct WalkRecordView: View {
                                     photoDisplayManager.totalDistance = distanceTracker.totalDistance
                                     photoDisplayManager.pace = displayedPace
 
-                                    // 저장 후 런 상태 초기화
+                                    // 저장 후 초기화
                                     timerManager.reset()
                                     distanceTracker.reset()
                                     displayedPace = "--'--\""
                                     lastUpdatedSecond = 0
-                                    isPaused = true
+                                    
+                                    // Live Activity 종료
+                                    LiveActivityManager.shared.end()
 
                                     // ✅ Alert 띄우기
                                     showPhotoAlert = true
@@ -169,7 +171,7 @@ struct WalkRecordView: View {
                     
                     // 큰 Play/Pause 버튼 (항상 중앙)
                     Button {
-                        if isPaused {
+                        if timerManager.isPaused {
                             timerManager.start()
                             distanceTracker.start()
                             resetMessage = nil
@@ -177,9 +179,8 @@ struct WalkRecordView: View {
                             timerManager.stop()
                             distanceTracker.stop()
                         }
-                        isPaused.toggle()
                     } label: {
-                        Image(systemName: isPaused ? "play.fill" : "pause.fill")
+                        Image(systemName: timerManager.isPaused ? "play.fill" : "pause.fill")
                             .font(.system(size: 32, weight: .bold))
                             .foregroundColor(.white)
                             .frame(width: 80, height: 80)
@@ -190,7 +191,7 @@ struct WalkRecordView: View {
 
 
                     // Reset 버튼
-                    ResetButton(isPaused: $isPaused, timerManager: timerManager, distanceTracker: distanceTracker) { message in
+                    ResetButton(timerManager: timerManager, distanceTracker: distanceTracker) { message in
                         resetMessage = message
                     }
                     .offset(x:80, y: 10)

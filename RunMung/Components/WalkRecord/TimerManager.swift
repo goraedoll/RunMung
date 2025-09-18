@@ -10,6 +10,7 @@ import Combine
 
 class TimerManager: ObservableObject {
     @Published var elapsedTime: TimeInterval = 0
+    @Published var isPaused: Bool = true
     
     private var timer: Timer? = nil
     private var isRunning = false
@@ -39,18 +40,20 @@ class TimerManager: ObservableObject {
     }
     
     func start() {
-        guard !isRunning else { return }
-        isRunning = true
+        guard isPaused else { return }
+        isPaused = false
         lastStartDate = Date()
         startTimer()
         
-        // ✅ Live Activity 시작
-        LiveActivityManager.shared.start()
+        if elapsedTime == 0 {
+            LiveActivityManager.shared.start()
+        }
+        LiveActivityManager.shared.update(elapsedTime: elapsedTime, isPaused: false)
     }
-    
+
     func stop() {
-        guard isRunning else { return }
-        isRunning = false
+        guard !isPaused else { return }
+        isPaused = true
         timer?.invalidate()
         timer = nil
         if let lastStart = lastStartDate {
@@ -58,14 +61,16 @@ class TimerManager: ObservableObject {
         }
         lastStartDate = nil
         
-        // Live Activity 종료
-        LiveActivityManager.shared.end()
+        // 일시정지 상태 반영
+        LiveActivityManager.shared.update(elapsedTime: elapsedTime, isPaused: true)
     }
 
     func reset() {
         stop()
         elapsedTime = 0
+        LiveActivityManager.shared.update(elapsedTime: 0, isPaused: true)
     }
+
     
     private func startTimer() {
         timer?.invalidate()

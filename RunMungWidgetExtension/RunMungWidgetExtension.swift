@@ -9,21 +9,25 @@ import SwiftUI
 struct TimerLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: TimerAttributes.self) { context in
-            // 🔹 잠금 화면 / 홈 화면 UI
             VStack(spacing: 8) {
-                // 상단 러닝 아이콘 + 앱 이름
                 HStack(spacing: 6) {
                     Text("🐶 런멍")
                         .font(.headline)
                         .foregroundColor(.primary)
                 }
 
-                // 메인 타이머
-                Text(context.state.startDate, style: .timer)
-                    .font(.system(size: 36, weight: .bold, design: .rounded))
-                    .foregroundColor(.orange)
+                if context.state.isPaused {
+                    Text(formatTime(context.state.elapsedTime))
+                        .font(.system(size: 36, weight: .bold, design: .rounded))
+                        .foregroundColor(.orange)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else if let startDate = context.state.startDate {
+                    Text(startDate, style: .timer)
+                        .font(.system(size: 36, weight: .bold, design: .rounded))
+                        .foregroundColor(.orange)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
 
-                // 부제목
                 Text("런닝 타이머")
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -41,14 +45,25 @@ struct TimerLiveActivity: Widget {
                         Image(systemName: "figure.run.circle.fill")
                     }
                     DynamicIslandExpandedRegion(.trailing) {
-                        Text(context.state.startDate, style: .timer)
-                            .font(.title3).bold()
+                        if context.state.isPaused {
+                            Text(formatTime(context.state.elapsedTime))
+                                .font(.title3).bold()
+                        } else if let startDate = context.state.startDate {
+                            Text(startDate, style: .timer)
+                                .font(.title3).bold()
+                        }
                     }
                 },
                 compactLeading: {
-                    Text(context.state.startDate, style: .timer)
-                        .font(.caption2)       // 훨씬 작게
-                        .frame(width: 40)
+                    if context.state.isPaused {
+                        Text(formatTime(context.state.elapsedTime))
+                            .font(.caption2)
+                            .frame(width: 40)
+                    } else if let startDate = context.state.startDate {
+                        Text(startDate, style: .timer)
+                            .font(.caption2)
+                            .frame(width: 40)
+                    }
                 },
                 compactTrailing: {
                     Image(systemName: "figure.run")
@@ -58,5 +73,15 @@ struct TimerLiveActivity: Widget {
                 }
             )
         }
+    }
+
+    // 🔹 Helper 함수: 초 → "MM:SS" 또는 "HH:MM:SS"
+    private func formatTime(_ elapsed: TimeInterval) -> String {
+        let hours = Int(elapsed) / 3600
+        let minutes = (Int(elapsed) % 3600) / 60
+        let seconds = Int(elapsed) % 60
+        return hours > 0
+        ? String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+        : String(format: "%02d:%02d", minutes, seconds)
     }
 }
