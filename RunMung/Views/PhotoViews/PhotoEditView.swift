@@ -9,6 +9,7 @@ import SwiftUI
 import PhotosUI
 
 
+
 struct PhotoEditView: View {
     // 입력
     var image: UIImage            // CameraView에서 축소된 이미지 전달
@@ -152,7 +153,7 @@ struct PhotoEditView: View {
         HStack(spacing: 12) {
             Button {
                 // 전체 초기화(원복)
-                withAnimation(.spring(response: 0.25, dampingFraction: 0.9)) {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
                     baseOffset = .zero
                     scale = 1.0
                     textColor = .white

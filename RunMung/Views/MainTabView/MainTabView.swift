@@ -14,7 +14,7 @@ struct MainTabView: View {
         TabView(selection: $selectedTabIndex) {
             
             // home
-            Text("홈 화면")
+            PhotosView()
                 .tabItem {
                     Label("홈", systemImage: "house.fill")
                 }

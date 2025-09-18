@@ -79,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				55A0332C2E716488007E2A06 /* RunMung */,
+				55A520DF2E7BEFA700C02BC3 /* Frameworks */,
 				55A0332B2E716488007E2A06 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -91,6 +92,13 @@
 				55A033432E716489007E2A06 /* RunMungUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		55A520DF2E7BEFA700C02BC3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -190,6 +198,8 @@
 			);
 			mainGroup = 55A033212E716487007E2A06;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 55A0332B2E716488007E2A06 /* Products */;
 			projectDirPath = "";

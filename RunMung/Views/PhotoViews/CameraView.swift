@@ -12,6 +12,7 @@ struct CameraView: View {
     @State private var showCamera = false
     @State private var capturedImage: UIImage?
     @State private var isCertified = false
+    @State private var showShareAlert = false   // ✅ 알림 상태
     
     init(previewImage: UIImage? = nil) {
         _capturedImage = State(initialValue: previewImage)
@@ -44,7 +45,6 @@ struct CameraView: View {
                                 .frame(width: previewWidth, height: previewHeight)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                             
-                            // ✅ 인증 마크 오버레이
                             if !isCertified {
                                 VStack {
                                     Spacer()
@@ -56,7 +56,7 @@ struct CameraView: View {
                                         .background(Color.coral.opacity(0.8))
                                         .clipShape(Capsule())
                                         .shadow(color: .black.opacity(0.3), radius: 6, x: 0, y: 3)
-                                        .padding(.bottom, 24) // 사진 하단 쪽에 위치
+                                        .padding(.bottom, 24)
                                 }
                                 .frame(width: previewWidth, height: previewHeight)
                             }
@@ -70,9 +70,12 @@ struct CameraView: View {
                     }
                 }
                 
-                if capturedImage != nil && isCertified {
+                // ✅ 공유하기 버튼 + 알림
+                if let image = capturedImage, isCertified {
                     Button("공유하기") {
-                        // 공유 기능
+                        let fileName = UUID().uuidString
+                        FileManager.saveImageToDocuments(image, name: fileName)
+                        showShareAlert = true   // 알림 띄우기
                     }
                     .font(.headline)
                     .foregroundColor(.white)
@@ -81,7 +84,12 @@ struct CameraView: View {
                     .background(Color.coral)
                     .cornerRadius(12)
                     .padding(.horizontal)
+                    .alert("이미지가 공유되었습니다", isPresented: $showShareAlert) {
+                        Button("확인", role: .cancel) {}
+                            .foregroundColor(.coral) // ✅ 확인 버튼 coral
+                    }
                 }
+
                 
                 Button("사진 촬영하기") {
                     showCamera = true
@@ -107,9 +115,9 @@ struct CameraView: View {
                 .cornerRadius(12)
                 .padding(.horizontal)
                 
-                Spacer() // 나머지 공간을 아래로 밀어줌
+                Spacer()
             }
-            .frame(maxHeight: .infinity, alignment: .top) // 항상 위에서부터 정렬
+            .frame(maxHeight: .infinity, alignment: .top)
             .safeAreaInset(edge: .top) {
                 HStack {
                     Spacer()
@@ -131,6 +139,7 @@ struct CameraView: View {
         }
     }
 }
+
 
 
 struct MockCameraView: View {
