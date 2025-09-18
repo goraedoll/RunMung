@@ -20,6 +20,14 @@ class DistanceTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
+        
+        // 백그라운드에서도 위치 추적 가능하게
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.pausesLocationUpdatesAutomatically = false
+        
+        // 산책 개선
+        locationManager.activityType = .fitness
+
     }
     
     func start() {

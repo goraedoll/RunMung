@@ -41,15 +41,15 @@ struct ResetButton: View {
                             }
                         },
                         perform: {
+                            
+                            timerManager.reset()
+                            distanceTracker.reset()
+                            isPaused = true
+                            
                             withAnimation {
                                 onMessageChange("초기화 되었습니다.")
                             }
 
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                timerManager.reset()
-                                distanceTracker.reset()
-                                isPaused = true
-                            }
 
                             // 2초 후 메시지 제거
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

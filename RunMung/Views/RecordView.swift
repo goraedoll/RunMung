@@ -183,12 +183,22 @@ struct RecordView: View {
         return String(format: "%02d:%02d", minutes, seconds)
     }
     
-    // ✅ 평균 페이스 (필터 기준)
+
+    // ✅ 평균 페이스 (elapsedTime / distance 활용)
     private func avgPace(records: [RunRecord]) -> String {
-        guard !records.isEmpty else { return "--'--\"" }
         let valid = records.filter { $0.distance > 0 }
-        return valid.last?.pace ?? "--'--\""
+        guard !valid.isEmpty else { return "--'--\"" }
+        
+        // 전체 총 시간 ÷ 총 거리
+        let totalTime = valid.map { $0.elapsedTime }.reduce(0, +)
+        let totalDistance = valid.map { $0.distance }.reduce(0, +)
+        let paceInSeconds = totalTime / totalDistance  // 초/km
+        
+        let minutes = Int(paceInSeconds) / 60
+        let seconds = Int(paceInSeconds) % 60
+        return String(format: "%d'%02d\"", minutes, seconds)
     }
+
 
     // ✅ 총 시간 (필터 기준)
     private func totalElapsed(records: [RunRecord]) -> String {
