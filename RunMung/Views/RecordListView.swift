@@ -12,22 +12,17 @@ struct RecordListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \RunRecord.date, order: .reverse) private var records: [RunRecord]
     
-    @State private var showDeleteAlert = false        // ✅ Alert 상태
-    @State private var pendingDeleteOffsets: IndexSet? // ✅ 삭제할 대상 저장
-    
     private func formatElapsed(_ time: Double) -> String {
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
     
-    private func confirmDelete() {
-        guard let offsets = pendingDeleteOffsets else { return }
+    private func deleteRecord(at offsets: IndexSet) {
         for index in offsets {
             let record = records[index]
             modelContext.delete(record)   // ✅ DB에서 삭제
         }
-        pendingDeleteOffsets = nil
     }
     
     var body: some View {
@@ -55,21 +50,9 @@ struct RecordListView: View {
                 }
                 .padding(.vertical, 4)
             }
-            .onDelete { offsets in
-                pendingDeleteOffsets = offsets    // ✅ 삭제 보류
-                showDeleteAlert = true            // ✅ Alert 표시
-            }
+            .onDelete(perform: deleteRecord)   // ✅ 스와이프 후 삭제 버튼 누르면 바로 삭제
         }
         .navigationTitle("모든 기록")
-        .alert("정말 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
-            Button("취소", role: .cancel) {
-                pendingDeleteOffsets = nil
-            }
-            Button("삭제", role: .destructive) {
-                confirmDelete()
-            }
-        } message: {
-            Text("삭제하면 되돌릴 수 없습니다.")
-        }
     }
 }
+
