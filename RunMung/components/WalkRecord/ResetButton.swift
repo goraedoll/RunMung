@@ -24,7 +24,7 @@ struct ResetButton: View {
                     .font(.system(size: 20, weight: .heavy))
                     .foregroundColor(.coral)
                     .frame(width: 40, height: 40)
-                    .background(isPressingReset ? Color.red.opacity(0.3) : Color.white)
+                    .background(isPressingReset ? Color.coral.opacity(0.3) : Color.white)
                     .clipShape(Circle())
                     .shadow(radius: 2)
                     .scaleEffect(isPressingReset ? 1.3 : 1.0)

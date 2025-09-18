@@ -13,27 +13,26 @@ struct SettingView: View {
     
     var body: some View {
         VStack {
-            HomeHeaderView()
-            HomeTitleView(text: "설정")
-            NavigationView {
-                List {
-                    Section(header: Text("계정")) {
-                        Text("프로필 관리")
-                        Text("비밀번호 변경")
-                    }
+            NavigationStack {
+                VStack(spacing: 0) {
+                    HomeHeaderView()
+                    HomeTitleView(text: "설정")
                     
-                    Section(header: Text("앱 설정")) {
-                        Toggle(isOn: $isPushOn) {
-                            Text("푸시 알림")
+                    List {
+                        Section(header: Text("계정")) {
+                            Text("프로필 관리")
+                            Text("비밀번호 변경")
                         }
-                        Toggle(isOn: $isDarkModeOn) {
-                            Text("다크 모드")
+                        
+                        Section(header: Text("앱 설정")) {
+                            Toggle(isOn: $isPushOn) { Text("푸시 알림") }
+                            Toggle(isOn: $isDarkModeOn) { Text("다크 모드") }
                         }
-                    }
-                    
-                    Section(header: Text("기타")) {
-                        Text("앱 버전 1.0.0")
-                        Text("도움말 / 문의하기")
+                        
+                        Section(header: Text("기타")) {
+                            Text("앱 버전 1.0.0")
+                            Text("도움말 / 문의하기")
+                        }
                     }
                 }
             }
@@ -41,6 +40,9 @@ struct SettingView: View {
     }
 }
 
-#Preview {
+#Preview("MainTabView") {
     MainTabView()
+        .environmentObject(DistanceTracker()) // 프리뷰용 객체 주입
+        .environmentObject(TimerManager()) // 프리뷰용 객체 주입
 }
+

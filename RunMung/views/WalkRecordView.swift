@@ -13,9 +13,13 @@ struct WalkRecordView: View {
     @State private var resetMessage: String? = nil
     @State private var displayedPace: String = "--'--\""
     @State private var lastUpdatedSecond: Int = 0
+    @State private var isPressingSave = false
+
     
     @EnvironmentObject var timerManager: TimerManager  // 시간 상태
     @EnvironmentObject var distanceTracker: DistanceTracker // 총 거리 상태 꺼내오기
+    
+    @Environment(\.modelContext) private var modelContext // SwiftData 컨텍스트 주입받기
     
         
     var body: some View {
@@ -117,6 +121,59 @@ struct WalkRecordView: View {
                 Spacer()
                 
                 ZStack {
+                    if isPaused && timerManager.elapsedTime > 0 {
+                        Image(systemName: "square.and.arrow.down.fill")
+                            .font(.system(size: 20, weight: .heavy))
+                            .foregroundColor(.coral)
+                            .frame(width: 40, height: 40)
+                            .background(isPressingSave ? Color.coral.opacity(0.3) : Color.white)
+                            .clipShape(Circle())
+                            .shadow(radius: 2)
+                            .scaleEffect(isPressingSave ? 1.3 : 1.0)
+                            .animation(.easeInOut(duration: 0.3), value: isPressingSave)
+                            .onLongPressGesture(
+                                minimumDuration: 3,
+                                pressing: { pressing in
+                                    withAnimation {
+                                        isPressingSave = pressing
+                                        if pressing {
+                                            resetMessage = "저장하려면 3초 이상 꾹 눌러주세요."
+                                        }
+                                    }
+                                },
+                                perform: {
+                                    let record = RunRecord(
+                                        date: Date(),
+                                        distance: distanceTracker.totalDistance,
+                                        elapsedTime: timerManager.elapsedTime,
+                                        pace: displayedPace
+                                    )
+                                    
+                                    modelContext.insert(record)
+                                    resetMessage = "기록이 저장되었습니다."
+                                    print("저장 완료: \(record)")
+                                    
+                                    // 저장 후 초기화
+                                    timerManager.reset()
+                                    distanceTracker.reset()
+                                    displayedPace = "--'--\""
+                                    lastUpdatedSecond = 0
+                                    isPaused = true
+                                    
+                                    // 2초 후 안내 메세지 제거
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        withAnimation {
+                                            resetMessage = nil
+                                        }
+                                    }
+                                }
+                            )
+                            .offset(x:-80, y: 10)
+                            .transition(.scale.combined(with: .opacity))
+                    }
+
+                    
+                    
                     // 큰 Play/Pause 버튼 (항상 중앙)
                     Button {
                         if isPaused {
