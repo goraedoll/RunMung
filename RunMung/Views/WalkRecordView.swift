@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ActivityKit
 
 struct WalkRecordView: View {
     @Environment(\.dismiss) private var dismiss
@@ -186,6 +187,7 @@ struct WalkRecordView: View {
                             .clipShape(Circle())
                             .shadow(radius: 4)
                     }
+
 
                     // Reset 버튼
                     ResetButton(isPaused: $isPaused, timerManager: timerManager, distanceTracker: distanceTracker) { message in

@@ -123,7 +123,7 @@ struct RecordView: View {
                                     .font(.headline)
                                     .foregroundColor(.primary)
                                 Spacer()
-                                NavigationLink(destination: RecordListView(records: records)) {
+                                NavigationLink(destination: RecordListView()) {
                                     Text("더보기")
                                         .font(.subheadline)
                                         .foregroundColor(.gray)

@@ -27,7 +27,6 @@ class DistanceTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         // 산책 개선
         locationManager.activityType = .fitness
-
     }
     
     func start() {

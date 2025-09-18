@@ -24,7 +24,6 @@ class TimerManager: ObservableObject {
     }
     
     init() {
-        // ✅ 앱 상태 전환 감지
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(appMovedToBackground),
@@ -44,6 +43,9 @@ class TimerManager: ObservableObject {
         isRunning = true
         lastStartDate = Date()
         startTimer()
+        
+        // ✅ Live Activity 시작
+        LiveActivityManager.shared.start()
     }
     
     func stop() {
@@ -55,6 +57,9 @@ class TimerManager: ObservableObject {
             elapsedTime += Date().timeIntervalSince(lastStart)
         }
         lastStartDate = nil
+        
+        // Live Activity 종료
+        LiveActivityManager.shared.end()
     }
 
     func reset() {
@@ -73,19 +78,15 @@ class TimerManager: ObservableObject {
         RunLoop.current.add(timer!, forMode: .common)
     }
     
-    // MARK: - 앱 상태 전환
-    
     @objc private func appMovedToBackground() {
         guard isRunning else { return }
         backgroundEnteredDate = Date()
-        // 타이머 정지 (백그라운드에서 안 돌음)
         timer?.invalidate()
         timer = nil
     }
     
     @objc private func appMovedToForeground() {
         guard isRunning, let backgroundEnteredDate else { return }
-        // 백그라운드 있었던 시간만큼 보정
         elapsedTime += Date().timeIntervalSince(backgroundEnteredDate)
         lastStartDate = Date()
         startTimer()

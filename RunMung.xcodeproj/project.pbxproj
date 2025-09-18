@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		55A521C42E7C159500C02BC3 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A521C32E7C159500C02BC3 /* WidgetKit.framework */; };
+		55A521C62E7C159500C02BC3 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A521C52E7C159500C02BC3 /* SwiftUI.framework */; };
+		55A521D12E7C159600C02BC3 /* RunMungWidgetExtensionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 55A521C22E7C159500C02BC3 /* RunMungWidgetExtensionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		55A0333A2E716489007E2A06 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,15 +27,60 @@
 			remoteGlobalIDString = 55A033292E716488007E2A06;
 			remoteInfo = RunMung;
 		};
+		55A521CF2E7C159600C02BC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55A033222E716487007E2A06 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 55A521C12E7C159500C02BC3;
+			remoteInfo = RunMungWidgetExtensionExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		55A521D62E7C159600C02BC3 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				55A521D12E7C159600C02BC3 /* RunMungWidgetExtensionExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		55A0332A2E716488007E2A06 /* RunMung.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RunMung.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55A033392E716489007E2A06 /* RunMungTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunMungTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		55A033432E716489007E2A06 /* RunMungUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunMungUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		55A521C22E7C159500C02BC3 /* RunMungWidgetExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RunMungWidgetExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		55A521C32E7C159500C02BC3 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		55A521C52E7C159500C02BC3 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		55A521D52E7C159600C02BC3 /* Exceptions for "RunMungWidgetExtension" folder in "RunMungWidgetExtensionExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 55A521C12E7C159500C02BC3 /* RunMungWidgetExtensionExtension */;
+		};
+		55A521D82E7C178700C02BC3 /* Exceptions for "RunMungWidgetExtension" folder in "RunMung" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				RunMungWidgetExtension.swift,
+			);
+			target = 55A033292E716488007E2A06 /* RunMung */;
+		};
+		55A521DA2E7C17DF00C02BC3 /* Exceptions for "RunMung" folder in "RunMungWidgetExtensionExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Components/WalkRecord/TimerAttributes.swift,
+			);
+			target = 55A521C12E7C159500C02BC3 /* RunMungWidgetExtensionExtension */;
+		};
 		55DA9AF42E799A4000620288 /* Exceptions for "RunMung" folder in "RunMung" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -44,8 +95,18 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				55DA9AF42E799A4000620288 /* Exceptions for "RunMung" folder in "RunMung" target */,
+				55A521DA2E7C17DF00C02BC3 /* Exceptions for "RunMung" folder in "RunMungWidgetExtensionExtension" target */,
 			);
 			path = RunMung;
+			sourceTree = "<group>";
+		};
+		55A521C72E7C159500C02BC3 /* RunMungWidgetExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				55A521D82E7C178700C02BC3 /* Exceptions for "RunMungWidgetExtension" folder in "RunMung" target */,
+				55A521D52E7C159600C02BC3 /* Exceptions for "RunMungWidgetExtension" folder in "RunMungWidgetExtensionExtension" target */,
+			);
+			path = RunMungWidgetExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -72,6 +133,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		55A521BF2E7C159500C02BC3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55A521C62E7C159500C02BC3 /* SwiftUI.framework in Frameworks */,
+				55A521C42E7C159500C02BC3 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -79,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				55A0332C2E716488007E2A06 /* RunMung */,
+				55A521C72E7C159500C02BC3 /* RunMungWidgetExtension */,
 				55A520DF2E7BEFA700C02BC3 /* Frameworks */,
 				55A0332B2E716488007E2A06 /* Products */,
 			);
@@ -90,6 +161,7 @@
 				55A0332A2E716488007E2A06 /* RunMung.app */,
 				55A033392E716489007E2A06 /* RunMungTests.xctest */,
 				55A033432E716489007E2A06 /* RunMungUITests.xctest */,
+				55A521C22E7C159500C02BC3 /* RunMungWidgetExtensionExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,6 +169,8 @@
 		55A520DF2E7BEFA700C02BC3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				55A521C32E7C159500C02BC3 /* WidgetKit.framework */,
+				55A521C52E7C159500C02BC3 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -111,10 +185,12 @@
 				55A033262E716488007E2A06 /* Sources */,
 				55A033272E716488007E2A06 /* Frameworks */,
 				55A033282E716488007E2A06 /* Resources */,
+				55A521D62E7C159600C02BC3 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				55A521D02E7C159600C02BC3 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				55A0332C2E716488007E2A06 /* RunMung */,
@@ -166,6 +242,28 @@
 			productReference = 55A033432E716489007E2A06 /* RunMungUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		55A521C12E7C159500C02BC3 /* RunMungWidgetExtensionExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 55A521D22E7C159600C02BC3 /* Build configuration list for PBXNativeTarget "RunMungWidgetExtensionExtension" */;
+			buildPhases = (
+				55A521BE2E7C159500C02BC3 /* Sources */,
+				55A521BF2E7C159500C02BC3 /* Frameworks */,
+				55A521C02E7C159500C02BC3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				55A521C72E7C159500C02BC3 /* RunMungWidgetExtension */,
+			);
+			name = RunMungWidgetExtensionExtension;
+			packageProductDependencies = (
+			);
+			productName = RunMungWidgetExtensionExtension;
+			productReference = 55A521C22E7C159500C02BC3 /* RunMungWidgetExtensionExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -186,6 +284,9 @@
 					55A033422E716489007E2A06 = {
 						CreatedOnToolsVersion = 16.4;
 						TestTargetID = 55A033292E716488007E2A06;
+					};
+					55A521C12E7C159500C02BC3 = {
+						CreatedOnToolsVersion = 16.4;
 					};
 				};
 			};
@@ -208,6 +309,7 @@
 				55A033292E716488007E2A06 /* RunMung */,
 				55A033382E716489007E2A06 /* RunMungTests */,
 				55A033422E716489007E2A06 /* RunMungUITests */,
+				55A521C12E7C159500C02BC3 /* RunMungWidgetExtensionExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -228,6 +330,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		55A033412E716489007E2A06 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55A521C02E7C159500C02BC3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -258,6 +367,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		55A521BE2E7C159500C02BC3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -270,6 +386,11 @@
 			isa = PBXTargetDependency;
 			target = 55A033292E716488007E2A06 /* RunMung */;
 			targetProxy = 55A033442E716489007E2A06 /* PBXContainerItemProxy */;
+		};
+		55A521D02E7C159600C02BC3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 55A521C12E7C159500C02BC3 /* RunMungWidgetExtensionExtension */;
+			targetProxy = 55A521CF2E7C159600C02BC3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -410,6 +531,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "내 위치를 지도에서 확인하기 위해 권한이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "사진을 앨범에 저장하기 위해 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "사진을 불러오기 위해 사진 보관함 접근 권한이 필요합니다.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -444,6 +566,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "내 위치를 지도에서 확인하기 위해 권한이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "사진을 앨범에 저장하기 위해 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "사진을 불러오기 위해 사진 보관함 접근 권한이 필요합니다.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -535,6 +658,62 @@
 			};
 			name = Release;
 		};
+		55A521D32E7C159600C02BC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5X492SX7JF;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RunMungWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RunMungWidgetExtension;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = goraedoll.RunMung.RunMungWidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		55A521D42E7C159600C02BC3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5X492SX7JF;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RunMungWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RunMungWidgetExtension;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = goraedoll.RunMung.RunMungWidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -570,6 +749,15 @@
 			buildConfigurations = (
 				55A033542E716489007E2A06 /* Debug */,
 				55A033552E716489007E2A06 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		55A521D22E7C159600C02BC3 /* Build configuration list for PBXNativeTarget "RunMungWidgetExtensionExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				55A521D32E7C159600C02BC3 /* Debug */,
+				55A521D42E7C159600C02BC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

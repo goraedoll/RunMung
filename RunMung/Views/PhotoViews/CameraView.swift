@@ -125,7 +125,7 @@ struct CameraView: View {
                         dismiss()
                     } label: {
                         Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 24, weight: .bold))
+                            .font(.system(size: 20, weight: .bold))
                             .foregroundColor(.gray)
                             .padding()
                     }
