@@ -14,14 +14,18 @@ struct WalkRecordView: View {
     @State private var displayedPace: String = "--'--\""
     @State private var lastUpdatedSecond: Int = 0
     @State private var isPressingSave = false
-
     
+    @State private var showCamera = false // 카메라 뷰 이동
+    @State private var showPhotoAlert = false // 카메라 알람
+
     @EnvironmentObject var timerManager: TimerManager  // 시간 상태
     @EnvironmentObject var distanceTracker: DistanceTracker // 총 거리 상태 꺼내오기
     
+    @EnvironmentObject var photoManager: PhotoManager // 사진 시간 상태
+    @EnvironmentObject var photoDisplayManager: PhotoDisplayManager // 사진용 총 시간
+    
     @Environment(\.modelContext) private var modelContext // SwiftData 컨텍스트 주입받기
     
-        
     var body: some View {
         ZStack {
             // 배경 (밝은 화이트 → 연코랄 그라데이션)
@@ -67,18 +71,6 @@ struct WalkRecordView: View {
                         }
                     }
                     .frame(maxWidth: .infinity)
-                    
-                    
-                    // 나중에 애플워치 연동까지
-//                    VStack {
-//                        Text("BPM")
-//                            .font(.caption)
-//                            .foregroundColor(.gray)
-//                        Text("128")
-//                            .font(.title2).bold()
-//                            .foregroundColor(.coral)
-//                    }
-//                    .frame(maxWidth: .infinity)
                     
                     VStack {
                         Text("시간")
@@ -152,27 +144,27 @@ struct WalkRecordView: View {
                                     modelContext.insert(record)
                                     resetMessage = "기록이 저장되었습니다."
                                     print("저장 완료: \(record)")
-                                    
-                                    // 저장 후 초기화
+
+                                    // ✅ 사진용 매니저에 값 복사
+                                    photoManager.elapsedTime = timerManager.elapsedTime
+                                    photoManager.formattedTime = timerManager.formattedTime
+                                    photoDisplayManager.totalDistance = distanceTracker.totalDistance
+                                    photoDisplayManager.pace = displayedPace
+
+                                    // 저장 후 런 상태 초기화
                                     timerManager.reset()
                                     distanceTracker.reset()
                                     displayedPace = "--'--\""
                                     lastUpdatedSecond = 0
                                     isPaused = true
-                                    
-                                    // 2초 후 안내 메세지 제거
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                        withAnimation {
-                                            resetMessage = nil
-                                        }
-                                    }
+
+                                    // ✅ Alert 띄우기
+                                    showPhotoAlert = true
                                 }
                             )
                             .offset(x:-80, y: 10)
                             .transition(.scale.combined(with: .opacity))
                     }
-
-                    
                     
                     // 큰 Play/Pause 버튼 (항상 중앙)
                     Button {
@@ -195,19 +187,18 @@ struct WalkRecordView: View {
                             .shadow(radius: 4)
                     }
 
-                    // Reset 버튼 (Play/Pause 오른쪽 아래에 붙이기)
+                    // Reset 버튼
                     ResetButton(isPaused: $isPaused, timerManager: timerManager, distanceTracker: distanceTracker) { message in
                         resetMessage = message
                     }
                     .offset(x:80, y: 10)
                 }
 
-                
                 // 지도 보기
                 Button {
                     print("지도 보기")
                 } label: {
-                    Label("지도 보기", systemImage: "map.fill") // ← SF Symbol 추가
+                    Label("지도 보기", systemImage: "map.fill")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
@@ -219,12 +210,26 @@ struct WalkRecordView: View {
             }
             .padding()
         }
+        // 저장 후 Alert
+        .alert("인증 사진을 찍겠습니까?", isPresented: $showPhotoAlert) {
+            Button("취소", role: .cancel) {}
+            Button("확인") {
+                showCamera = true
+            }
+        }
+        // ✅ CameraView를 모달(풀스크린)로 띄우기
+        .fullScreenCover(isPresented: $showCamera) {
+            CameraView()
+        }
     }
 }
 
 #Preview("Walk record preview") {
-    WalkRecordView()
-        .environmentObject(DistanceTracker()) // 객체 주입
-        .environmentObject(TimerManager())
+    NavigationStack {
+        WalkRecordView()
+            .environmentObject(DistanceTracker())
+            .environmentObject(TimerManager())
+            .environmentObject(PhotoManager())
+            .environmentObject(PhotoDisplayManager())
+    }
 }
-

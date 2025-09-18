@@ -21,7 +21,7 @@ struct MainTabView: View {
                 .tag(0)
 
             // 플랜
-            Text("AI")
+            CameraView()
                 .tabItem {
                     Label("AI", systemImage: "sparkles")
                 }
@@ -50,7 +50,6 @@ struct MainTabView: View {
         }
     }
 }
-
 
 #Preview("MainTabView") {
     MainTabView()
