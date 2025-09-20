@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ActivityKit
+import UIKit
 
 struct WalkRecordView: View {
     @Environment(\.dismiss) private var dismiss
@@ -130,6 +131,32 @@ struct WalkRecordView: View {
                                         isPressingSave = pressing
                                         if pressing {
                                             resetMessage = "저장하려면 3초 이상 꾹 눌러주세요."
+
+                                            // 시작 진동
+                                            let generator = UIImpactFeedbackGenerator(style: .medium)
+                                            generator.prepare()     // ✅ 먼저 준비
+                                            generator.impactOccurred()
+
+                                            // 1초 후, 2초 후 추가 진동
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                                if isPressingSave {
+                                                    let g = UIImpactFeedbackGenerator(style: .light)
+                                                    g.prepare()
+                                                    g.impactOccurred()
+                                                }
+                                            }
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                                if isPressingSave {
+                                                    let g = UIImpactFeedbackGenerator(style: .rigid)
+                                                    g.prepare()
+                                                    g.impactOccurred()
+                                                }
+                                            }
+                                        } else {
+                                            // 손을 뗐을 때
+                                            let g = UINotificationFeedbackGenerator()
+                                            g.prepare()
+                                            g.notificationOccurred(.error)
                                         }
                                     }
                                 },
@@ -160,6 +187,13 @@ struct WalkRecordView: View {
                                     
                                     // Live Activity 종료
                                     LiveActivityManager.shared.end()
+                                    
+                                    // 저장 성공 햅틱 반응
+                                    
+                                    let generator = UINotificationFeedbackGenerator()
+                                    generator.prepare()
+                                    generator.notificationOccurred(.success)
+
 
                                     // ✅ Alert 띄우기
                                     showPhotoAlert = true
@@ -171,6 +205,10 @@ struct WalkRecordView: View {
                     
                     // 큰 Play/Pause 버튼 (항상 중앙)
                     Button {
+                        let generator = UIImpactFeedbackGenerator(style: timerManager.isPaused ? .medium : .light)
+                        generator.prepare()
+                        generator.impactOccurred()
+                        
                         if timerManager.isPaused {
                             timerManager.start()
                             distanceTracker.start()

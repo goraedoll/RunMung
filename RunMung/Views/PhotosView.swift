@@ -83,50 +83,63 @@ struct MasonryLayout: Layout {
 struct PhotosView: View {
     @State private var photos: [PhotoItem] = []
     @State private var selectedIndex: Int? = nil
+    @State private var selectedPhoto: PhotoItem? = nil   // ✅ 선택된 사진을 저장
 
     var body: some View {
-        VStack(spacing: 0) {
-            HomeHeaderView()
-            HomeTitleView(text: "🐶")
+        NavigationStack {
+            VStack(spacing: 0) {
+                HomeHeaderView()
+                HomeTitleView(text: "🐶")
 
-            ScrollView {
-                MasonryLayout(columns: 3, spacing: 2) {
-                    ForEach(photos.indices, id: \.self) { i in
-                        ZStack {
-                            Image(uiImage: photos[i].image)
-                                .resizable()
-                                .scaledToFill()
-                                .clipped()
-                                .onLongPressGesture {
-                                    withAnimation {
-                                        selectedIndex = i
+                ScrollView {
+                    MasonryLayout(columns: 3, spacing: 2) {
+                        ForEach(photos.indices, id: \.self) { i in
+                            ZStack {
+                                // ✅ 썸네일 이미지
+                                Image(uiImage: photos[i].image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .clipped()
+                                    .contentShape(Rectangle()) // 터치 영역 보정
+                                    .onTapGesture {            // 짧게 터치 → 상세 화면 이동
+                                        selectedPhoto = photos[i]
                                     }
-                                }
-
-                            if selectedIndex == i {
-                                VStack {
-                                    Spacer()
-                                    HStack {
-                                        Spacer()
-                                        Button {
-                                            deleteImage(at: i)
-                                        } label: {
-                                            Image(systemName: "trash.circle.fill")
-                                                .font(.system(size: 40))
-                                                .foregroundColor(.red)
-                                                .shadow(radius: 4)
+                                    .onLongPressGesture {      // 길게 터치 → 삭제 버튼 표시
+                                        withAnimation {
+                                            selectedIndex = i
                                         }
-                                        .padding(8)
+                                    }
+
+                                // ✅ 삭제 버튼 (길게 눌렀을 때만 표시)
+                                if selectedIndex == i {
+                                    VStack {
+                                        Spacer()
+                                        HStack {
+                                            Spacer()
+                                            Button {
+                                                deleteImage(at: i)
+                                            } label: {
+                                                Image(systemName: "trash.circle.fill")
+                                                    .font(.system(size: 40))
+                                                    .foregroundColor(.red)
+                                                    .shadow(radius: 4)
+                                            }
+                                            .padding(8)
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+                // ✅ navigationDestination 연결
+                .navigationDestination(item: $selectedPhoto) { photo in
+                    PhotoDetailView(photo: photo)
+                }
             }
-        }
-        .onAppear {
-            loadAllImages()
+            .onAppear {
+                loadAllImages()
+            }
         }
     }
 
