@@ -22,7 +22,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        manager.distanceFilter = 50
+        manager.distanceFilter = 100
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
     }
@@ -60,12 +60,11 @@ struct HomeMapView: View {
 
     var body: some View {
         Map(position: $camera, interactionModes: .all) {
-            // ✅ 파란 점(사용자 위치)은 이렇게
+            // 파란 점(사용자 위치)은 이렇게
             UserAnnotation()
-
-            // ✅ 커스텀 마커가 필요하면 Marker/Annotation 사용
-//            Marker("내 위치", coordinate: locationManager.region.center)
-//                .tint(.red)
+        }
+        .safeAreaInset(edge: .top) {
+            Spacer().frame(height: 260)
         }
         // region이 바뀔 때 카메라도 따라가게
         .onReceive(locationManager.$region) { newRegion in

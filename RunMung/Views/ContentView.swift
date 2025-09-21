@@ -4,9 +4,6 @@
 //
 //  Created by 고래돌 on 9/10/25.
 //
-
-import SwiftUI
-
 import SwiftUI
 
 struct ContentView: View {
@@ -15,7 +12,6 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             HomeMapView()
-                .padding(.top, 260)
                 .ignoresSafeArea()
             
             VStack(spacing: 4) {
