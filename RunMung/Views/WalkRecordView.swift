@@ -134,7 +134,7 @@ struct WalkRecordView: View {
 
                                             // 시작 진동
                                             let generator = UIImpactFeedbackGenerator(style: .medium)
-                                            generator.prepare()     // ✅ 먼저 준비
+                                            generator.prepare()
                                             generator.impactOccurred()
 
                                             // 1초 후, 2초 후 추가 진동

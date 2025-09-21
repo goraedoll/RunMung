@@ -74,40 +74,6 @@ struct HomeSlidingView: View {
     }
 }
 
-
-//struct HomeSlidingView: View {
-//    @State private var selection: Int = 0
-//    private let pageCount = 4
-//    
-//    var body: some View {
-//        VStack(spacing: 16) {
-//            TabView(selection: $selection) {
-//                ForEach(0..<pageCount, id: \.self) { index in
-//                    RoundedRectangle(cornerRadius: 16)
-//                        .fill(Color.white)
-//                        .overlay(Text("\(index + 1)"))
-//                        .shadow(color: .black.opacity(0.2), radius: 4, x: 2, y: 4)
-//                        .tag(index)
-//                        .padding()
-//                }
-//            }
-//        }
-//        .tabViewStyle(.page)   // 페이징 스타일 (좌우 스와이프)
-//        .frame(height: 200)
-//        
-//        // 인디케이터
-//        HStack(spacing: 4) {
-//            ForEach(0..<pageCount, id: \.self) { index in
-//                Rectangle()
-//                    .fill(selection == index ? Color.black : Color.gray)
-//                    .frame(width: 16, height: 2)
-//                    .animation(.easeInOut, value: selection)
-//                    
-//            }
-//        }
-//    }
-//}
-
 #Preview {
     ContentView()
 }

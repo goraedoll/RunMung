@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ResetButton: View {
     @ObservedObject var timerManager: TimerManager
@@ -26,30 +27,32 @@ struct ResetButton: View {
                     .scaleEffect(isPressingReset ? 1.3 : 1.0)
                     .animation(.easeInOut(duration: 0.3), value: isPressingReset)
                     .onLongPressGesture(
-                        minimumDuration: 3,
-                        pressing: { pressing in
-                            withAnimation {
-                                isPressingReset = pressing
-                                if pressing {
-                                    onMessageChange("초기화하려면 3초 이상 꾹 눌러주세요.")
-                                }
-                            }
-                        },
-                        perform: {
-                            timerManager.reset()
-                            distanceTracker.reset()
-                            
-                            // Live Activity 종료
-                            LiveActivityManager.shared.end()
-                            
-                            withAnimation {
-                                onMessageChange("초기화 되었습니다.")
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                withAnimation { onMessageChange(nil) }
-                            }
-                        }
-                    )
+                       minimumDuration: 3,
+                       pressing: { pressing in
+                           withAnimation {
+                               isPressingReset = pressing
+                           }
+                           
+                           if pressing {
+                               impact(style: .light) // 시작 진동
+                               onMessageChange("초기화하려면 3초 이상 꾹 눌러주세요.")
+                           }
+                       },
+                       perform: {
+                           notify(.success) // 완료 진동
+                           
+                           timerManager.reset()
+                           distanceTracker.reset()
+                           LiveActivityManager.shared.end()
+                           
+                           withAnimation {
+                               onMessageChange("초기화 되었습니다.")
+                           }
+                           DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                               withAnimation { onMessageChange(nil) }
+                           }
+                       }
+                   )
             } else {
                 Image(systemName: "lock.fill")
                     .font(.system(size: 20, weight: .heavy))
@@ -60,6 +63,19 @@ struct ResetButton: View {
                     .shadow(radius: 2)
             }
         }
+    }
+    
+    // MARK: - Haptic Helpers
+    private func impact(style: UIImpactFeedbackGenerator.FeedbackStyle){
+        let generator = UIImpactFeedbackGenerator(style: style)
+        generator.prepare()
+        generator.impactOccurred()
+    }
+    
+    private func notify(_ type: UINotificationFeedbackGenerator.FeedbackType){
+        let generator = UINotificationFeedbackGenerator()
+        generator.prepare()
+        generator.notificationOccurred(type)
     }
 }
 
