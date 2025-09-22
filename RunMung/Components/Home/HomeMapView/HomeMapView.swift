@@ -59,27 +59,28 @@ struct HomeMapView: View {
     )
 
     var body: some View {
-        Map(position: $camera, interactionModes: .all) {
-            // 파란 점(사용자 위치)은 이렇게
-            UserAnnotation()
-        }
-        .safeAreaInset(edge: .top) {
+        VStack {
             Spacer().frame(height: 260)
-        }
-        // region이 바뀔 때 카메라도 따라가게
-        .onReceive(locationManager.$region) { newRegion in
-            camera = .region(newRegion)
-        }
-        // 바깥을 흰색으로 덮는 원형 그라데이션
-        .overlay(
-            RadialGradient(
-                gradient: Gradient(colors: [.clear, .white.opacity(0.9)]),
-                center: .center,
-                startRadius: 50,
-                endRadius: 220
+            Map(position: $camera, interactionModes: .all) {
+                // 파란 점(사용자 위치)은 이렇게
+                UserAnnotation()
+            }
+            // region이 바뀔 때 카메라도 따라가게
+            .onReceive(locationManager.$region) { newRegion in
+                camera = .region(newRegion)
+            }
+            // 바깥을 흰색으로 덮는 원형 그라데이션
+            .overlay(
+                RadialGradient(
+                    gradient: Gradient(colors: [.clear, .white.opacity(0.9)]),
+                    center: .center,
+                    startRadius: 50,
+                    endRadius: 220
+                )
             )
-        )
-        .ignoresSafeArea()
+            .ignoresSafeArea()
+            
+        }
     }
 }
 
