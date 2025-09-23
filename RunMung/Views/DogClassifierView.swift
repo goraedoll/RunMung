@@ -206,7 +206,7 @@ struct DogClassifierView: View {
                         }
                     } else {
                         Button("강아지 기본정보 만들기") {
-                            let newProfile = DogProfile(
+                            _ = DogProfile(
                                 gender: "M",
                                 isNeutered: false,
                                 ageRange: "성년",

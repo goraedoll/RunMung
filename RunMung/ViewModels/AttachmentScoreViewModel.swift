@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-
 @MainActor
 class AttachmentScoreViewModel: ObservableObject {
     // 사용자 입력값
@@ -30,6 +29,11 @@ class AttachmentScoreViewModel: ObservableObject {
     @Published var predictionResult: PredictionResponse? = nil
     @Published var errorMessage: String? = nil
 
+    // ✅ DogGuide 관련 상태
+    @Published var dogGuide: DogGuideResponse? = nil
+    @Published var guideLoading = false
+    @Published var guideError: String? = nil
+
     // 맵핑 딕셔너리
     let breedMap = ["푸들":"POO","포메라니안":"POM","말라뮤트":"MAL","비숑프리제":"BIC","치와와":"CHL","래브라도리트리버":"LAB","진도":"JIN"]
     let environmentMap = ["실내":"in","실외":"out"]
@@ -39,11 +43,12 @@ class AttachmentScoreViewModel: ObservableObject {
     let weightMap = ["저체중":"low","정상":"normal","과체중":"over"]
     let ageRangeMap = ["유년":"puppy","성년":"adult","노년":"senior"]
 
-    // 서버 요청
+    // 서버 요청 (예측 → 가이드 체인)
     func predictExercise() {
         isLoading = true
         predictionResult = nil
         errorMessage = nil
+        dogGuide = nil
 
         let payload: [String: Any] = [
             "breed": breedMap[breed] ?? "POO",
@@ -87,11 +92,32 @@ class AttachmentScoreViewModel: ObservableObject {
                     withAnimation {
                         self.predictionResult = decoded
                     }
+
+                    // ✅ 운동 강도 결과를 바탕으로 DogGuide 호출
+                    let breedCode = self.breedMap[self.breed] ?? "POO"
+                    self.fetchDogGuide(breed: breedCode, workoutLevel: "\(decoded.prediction)")
                 } catch {
                     self.errorMessage = "응답 파싱 실패"
                 }
             }
         }.resume()
+    }
+
+    // DogGuide 불러오기
+    func fetchDogGuide(breed: String, workoutLevel: String) {
+        Task {
+            guideLoading = true
+            guideError = nil
+            dogGuide = nil
+            do {
+                let req = DogGuideRequest(breeds: breed, workoutLevel: workoutLevel)
+                let response = try await DogGuideManager.shared.fetchDogGuide(request: req)
+                self.dogGuide = response
+            } catch {
+                self.guideError = error.localizedDescription
+            }
+            guideLoading = false
+        }
     }
 
     func previewJSON() -> String {

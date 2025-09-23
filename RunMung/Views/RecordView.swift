@@ -16,7 +16,7 @@ struct RecordView: View {
     @State private var selectedFilter: String = "주"
     private let filters = ["주", "월", "년", "전체"]
     
-    // ✅ 선택된 필터 범위의 RunRecord만 반환
+    // 선택된 필터 범위의 RunRecord만 반환
     private var filteredRunRecords: [RunRecord] {
         let calendar = Calendar.current
         let today = Date()
@@ -58,7 +58,7 @@ struct RecordView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         
-                        // ✅ 필터 버튼
+                        // 필터 버튼
                         HStack(spacing: 12) {
                             ForEach(filters, id: \.self) { filter in
                                 Button {
@@ -78,7 +78,7 @@ struct RecordView: View {
                         }
                         .padding(.horizontal)
                         
-                        // ✅ 요약 카드 (필터 기준 값 표시)
+                        // 요약 카드 (필터 기준 값 표시)
                         HStack(spacing: 12) {
                             SummaryCard(title: "총 산책 횟수", value: "\(filteredRunRecords.count)회")
                             SummaryCard(title: "평균 페이스", value: avgPace(records: filteredRunRecords))
@@ -87,7 +87,7 @@ struct RecordView: View {
                         .padding(.horizontal)
 
                         
-                        // ✅ 그래프 카드
+                        // 그래프 카드
                         VStack(alignment: .leading, spacing: 12) {
                             Text("\(selectedFilter) 활동 그래프")
                                 .font(.headline)

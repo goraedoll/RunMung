@@ -4,29 +4,18 @@
 //
 //  Created by 고래돌 on 9/23/25.
 //
-import SwiftUI
 
-// 키보드 내리기 유틸리티
-extension UIApplication {
-    func endEditing(_ force: Bool) {
-        self.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-}
+import SwiftUI
 
 struct DogChatView: View {
     @Environment(\.dismiss) private var dismiss
-    
-    @State private var messages: [Message] = [
-        Message(text: "멍! 오늘 산책 가고 싶어 🐾", isUser: false),
-        Message(text: "좋아! 몇 시에 나갈까?", isUser: true),
-        Message(text: "지금 바로!! 🐶✨", isUser: false)
-    ]
-    
+    @StateObject private var socketManager = WebSocketManager()
     @State private var inputText: String = ""
+    @FocusState private var isInputActive: Bool   // 👈 포커스 상태 추가
 
     var body: some View {
         VStack {
-            // 상단 헤더 (아이콘 추가)
+            // 상단 헤더
             HStack {
                 Button(action: {
                     goToMainTabView()
@@ -55,26 +44,26 @@ struct DogChatView: View {
             .padding()
             .background(Color.coral)
             
-            // 대화 영역 (자동 스크롤)
+            // 대화 영역
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(spacing: 14) {
-                        ForEach(messages) { msg in
+                        ForEach(socketManager.messages) { msg in
                             ChatBubble(message: msg)
-                                .id(msg.id) // 각 메시지에 id 부여
+                                .id(msg.id)
                         }
                     }
                     .padding()
                 }
-                .onChange(of: messages.count) { oldValue, newValue in
-                    if newValue > oldValue, let lastID = messages.last?.id {
+                .onChange(of: socketManager.messages.count) { oldValue, newValue in
+                    if newValue > oldValue, let lastID = socketManager.messages.last?.id {
                         withAnimation {
-                            proxy.scrollTo(lastID, anchor: . bottom)
+                            proxy.scrollTo(lastID, anchor: .bottom)
                         }
                     }
                 }
                 .onTapGesture {
-                    UIApplication.shared.endEditing(true)
+                    isInputActive = false  // 👈 화면 탭하면 키보드 내림
                 }
             }
             
@@ -84,11 +73,11 @@ struct DogChatView: View {
                     .padding(12)
                     .background(Color(.systemGray6))
                     .cornerRadius(20)
-                    .font(.system(size: 16, weight: .regular))
+                    .focused($isInputActive)  // 👈 포커스 바인딩
                 
                 Button(action: {
                     if !inputText.isEmpty {
-                        messages.append(Message(text: inputText, isUser: true))
+                        socketManager.send(text: inputText)
                         inputText = ""
                     }
                 }) {
@@ -97,7 +86,6 @@ struct DogChatView: View {
                         .padding(12)
                         .background(Color.coral)
                         .clipShape(Circle())
-                        .shadow(radius: 1)
                 }
             }
             .padding(.horizontal)
@@ -119,7 +107,6 @@ func goToMainTabView() {
         window.makeKeyAndVisible()
     }
 }
-
 
 // 메시지 모델
 struct Message: Identifiable {

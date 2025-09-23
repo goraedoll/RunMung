@@ -2,9 +2,11 @@ import SwiftUI
 
 struct ResultBottomSheet: View {
     let result: PredictionResponse
+    let breed: String
     let onClose: () -> Void
-
+    
     @ObservedObject private var scoreManager = AttachmentScoreManager.shared
+    @StateObject private var guideVM = DogGuideViewModel()
 
     var body: some View {
         VStack {
@@ -61,22 +63,52 @@ struct ResultBottomSheet: View {
                 }
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray6)))
+                
+                // 강아지 가이드 섹션
+                if guideVM.isLoading {
+                    ProgressView("강아지 가이드 불러오는 중...")
+                        .padding()
+                } else if let guide = guideVM.guide {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("🐶 \(guide.breedName) 가이드")
+                        Text("산책 가이드: \(guide.walkingGuide)")
+                        Text("놀이 가이드: \(guide.playGuide)")
+                        Text("추가 팁: \(guide.additionalTips)")
+                    }
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray6)))
+                } else if let error = guideVM.errorMessage {
+                    Text("에러: \(error)")
+                        .foregroundColor(.red)
+                }
 
                 // 닫기 버튼
-                Button("닫기") { onClose() }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.coral)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
+                Button("닫기") {
+                    withAnimation(.spring()) { // ✅ 닫을 때만 애니메이션 적용
+                        onClose()
+                    }
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.coral)
+                .foregroundColor(.white)
+                .cornerRadius(12)
             }
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 20)
                     .fill(Color(.systemBackground))
             )
+            // ✅ 뷰가 나타날 때 API 호출
+            .onAppear {
+                Task {
+                    await guideVM.loadGuide(
+                        breed: breed,
+                        workoutLevel: "\(result.prediction)"
+                    )
+                }
+            }
         }
-        .transition(.move(edge: .bottom))
-        .animation(.spring(), value: result)
+        .transition(.move(edge: .bottom).combined(with: .opacity)) // ✅ 자연스러운 전환
     }
 }

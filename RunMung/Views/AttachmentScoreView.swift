@@ -131,7 +131,7 @@ struct AttachmentScoreView: View {
                             }
                         } else {
                             Button("강아지 기본정보 만들기") {
-                                let newProfile = DogProfile(
+                                _ = DogProfile(
                                     gender: "M",
                                     isNeutered: false,
                                     ageRange: "성년",
@@ -199,8 +199,12 @@ struct AttachmentScoreView: View {
             }
 
             // 결과 Bottom Sheet
+            // AttachmentScoreView.swift
             if let result = viewModel.predictionResult {
-                ResultBottomSheet(result: result) {
+                ResultBottomSheet(
+                    result: result,
+                    breed: profileViewModel.breedCode // ✅ 분류된 코드 (POO, POM, ...)
+                ) {
                     withAnimation {
                         viewModel.predictionResult = nil
                     }
