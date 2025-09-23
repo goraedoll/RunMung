@@ -22,7 +22,7 @@ class DogClassifierViewModel: ObservableObject {
     @Published var weightState: String = ""
     @Published var gender: String = ""
 
-    // ✅ 품종 매핑
+    // 품종 매핑
     private let breedMapping: [String: (code: String, korean: String)] = [
         "Poodle": ("POO", "푸들"),
         "Pomeranian": ("POM", "포메라니안"),

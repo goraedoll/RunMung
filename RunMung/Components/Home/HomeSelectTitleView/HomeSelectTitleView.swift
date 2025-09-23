@@ -9,7 +9,7 @@ import SwiftUI
 struct HomeSelectTitleView: View {
     @Binding var selectedIndex: Int
     
-    private let titles = ["바로 시작", "런멍 가이드"]
+    private let titles = ["바로 시작", "댕구르르 가이드"]
     
     var body: some View {
         HStack(spacing: 16) {
