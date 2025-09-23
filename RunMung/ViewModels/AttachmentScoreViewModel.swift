@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+
 @MainActor
 class AttachmentScoreViewModel: ObservableObject {
     // 사용자 입력값

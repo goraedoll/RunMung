@@ -16,7 +16,7 @@ struct ContentView: View {
             
             VStack(spacing: 4) {
                 HomeHeaderView()
-                HomeTitleView(text: "🐶 RunMung")
+                HomeTitleView(text: "🐶 댕구르르")
                 HomeSelectTitleView(selectedIndex: $selectedIndex)
                 
                 // 위에서 전환되는 콘텐츠만 TabView로

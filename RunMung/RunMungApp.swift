@@ -24,13 +24,12 @@ struct RunMungApp: App {
                 .environmentObject(photoManager)
                 .environmentObject(photoDisplayManager)
         }
-        .modelContainer(for: RunRecord.self)
+        .modelContainer(for: [RunRecord.self, DogProfile.self])
     }
 }
 
 #Preview("MainTabView") {
     MainTabView()
-        .environmentObject(DistanceTracker()) // 프리뷰용 객체 주입
-        .environmentObject(TimerManager()) // 프리뷰용 객체 주입
+        .modelContainer(for: [RunRecord.self, DogProfile.self]) // 통합 등록
 }
 

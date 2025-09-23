@@ -1,16 +1,17 @@
 import SwiftUI
+import SwiftData
 
 struct AttachmentScoreView: View {
-    @StateObject private var viewModel = AttachmentScoreViewModel()
-    @StateObject private var profileViewModel = DogClassifierViewModel()
+    @ObservedObject var viewModel: AttachmentScoreViewModel
+    @ObservedObject var profileViewModel: DogClassifierViewModel
+    
+    @Environment(\.modelContext) private var context
+    @Query private var profiles: [DogProfile]
 
-    // ✅ DogClassifierView에서 전달되는 초기 견종
-    let initialBreedKorean: String?
-    let initialBreedCode: String?
-
-    init(initialBreedKorean: String? = nil, initialBreedCode: String? = nil) {
-        self.initialBreedKorean = initialBreedKorean
-        self.initialBreedCode = initialBreedCode
+    init(viewModel: AttachmentScoreViewModel,
+         profileViewModel: DogClassifierViewModel) {
+        self.viewModel = viewModel
+        self.profileViewModel = profileViewModel
     }
 
     var body: some View {
@@ -18,7 +19,7 @@ struct AttachmentScoreView: View {
             VStack {
                 ScrollView {
                     VStack(spacing: 28) {
-                        // ✅ 상단 프로필 섹션
+                        // 상단 프로필 섹션
                         VStack(spacing: 12) {
                             if let image = profileViewModel.selectedImage {
                                 Image(uiImage: image)
@@ -51,59 +52,90 @@ struct AttachmentScoreView: View {
                         .padding(.top, 20)
 
                         // ✅ 품종 (읽기 전용)
-                        infoCard(title: "품종", value: viewModel.breed)
-                            .onAppear {
-                                if let breed = initialBreedKorean,
-                                   viewModel.breedMap.keys.contains(breed) {
-                                    viewModel.breed = breed
-                                }
-                            }
+                        infoCard(title: "품종", value: profileViewModel.breedResult)
 
                         // -------------------------
-                        // 📋 주요 입력 그룹
+                        // 📋 주요 정보
                         // -------------------------
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("📋 주요 정보")
+                            Text("📋 일일 입력 정보")
                                 .font(.headline)
                                 .padding(.leading)
 
-                            pickerCard(title: "생활환경", selection: $viewModel.environment,
-                                       options: Array(viewModel.environmentMap.keys))
                             pickerCard(title: "배변상태", selection: $viewModel.defecation,
                                        options: Array(viewModel.defecationMap.keys))
+
                             pickerCard(title: "질병 여부", selection: $viewModel.disease,
                                        options: Array(viewModel.diseaseMap.keys))
-                            pickerCard(title: "크기", selection: $viewModel.size,
-                                       options: Array(viewModel.sizeMap.keys))
-                            pickerCard(title: "체중 상태", selection: $viewModel.weightState,
-                                       options: Array(viewModel.weightMap.keys))
+
+                            // ✅ 1회 식사량 (30g 단위 환산)
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("1회 식사량")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+
+                                Stepper(value: $viewModel.foodAmount, in: 1...8) {
+                                    let grams = viewModel.foodAmount * 30
+                                    Text("\(viewModel.foodAmount) 단위 (\(grams) g)")
+                                        .font(.body)
+                                        .fontWeight(.semibold)
+                                }
+                            }
+                            .padding()
+                            .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray6)))
                         }
 
                         // -------------------------
-                        // ⚙️ 부가 입력 그룹
+                        // ⚙️ 기본 정보
                         // -------------------------
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("⚙️ 부가 정보")
-                                .font(.headline)
-                                .padding(.leading)
+                        if let profile = profiles.first {
+                            VStack(alignment: .leading, spacing: 16) {
+                                Text("⚙️ 기본 정보")
+                                    .font(.headline)
+                                    .padding(.leading)
 
-                            pickerCard(title: "성별", selection: $viewModel.gender, options: ["M","F"])
-                            toggleCard(title: "중성화 여부", isOn: $viewModel.isNeutered)
-                            pickerCard(title: "연령대", selection: $viewModel.ageRange,
-                                       options: Array(viewModel.ageRangeMap.keys))
-                            stepperCard(title: "나이", value: $viewModel.age, range: 0...20, unit: "세")
-                        }
+                                pickerCard(title: "성별", selection: Binding(
+                                    get: { profile.gender },
+                                    set: { profile.gender = $0 }
+                                ), options: ["M","F"])
 
-                        // -------------------------
-                        // 식사 관련 입력
-                        // -------------------------
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("🍽️ 식사 정보")
-                                .font(.headline)
-                                .padding(.leading)
+                                toggleCard(title: "중성화 여부", isOn: Binding(
+                                    get: { profile.isNeutered },
+                                    set: { profile.isNeutered = $0 }
+                                ))
 
-                            stepperCard(title: "식사 횟수", value: $viewModel.foodCount, range: 1...4, unit: "회")
-                            stepperCard(title: "1회 식사량", value: $viewModel.foodAmount, range: 1...8, unit: "단위")
+                                pickerCard(title: "연령대", selection: Binding(
+                                    get: { profile.ageRange },
+                                    set: { profile.ageRange = $0 }
+                                ), options: Array(viewModel.ageRangeMap.keys))
+
+                                stepperCard(title: "나이", value: Binding(
+                                    get: { profile.age },
+                                    set: { profile.age = $0 }
+                                ), range: 0...20, unit: "세")
+
+                                pickerCard(title: "생활환경", selection: Binding(
+                                    get: { profile.environment },
+                                    set: { profile.environment = $0 }
+                                ), options: Array(viewModel.environmentMap.keys))
+
+                                pickerCard(title: "크기", selection: Binding(
+                                    get: { profile.size },
+                                    set: { profile.size = $0 }
+                                ), options: Array(viewModel.sizeMap.keys))
+
+                                pickerCard(title: "체중 상태", selection: Binding(
+                                    get: { profile.weightState },
+                                    set: { profile.weightState = $0 }
+                                ), options: Array(viewModel.weightMap.keys))
+                            }
+                        } else {
+                            Button("강아지 기본정보 만들기") {
+                                let newProfile = DogProfile()
+                                context.insert(newProfile)
+                                try? context.save()   // ✅ 저장
+                            }
+                            .padding()
                         }
 
                         // -------------------------
@@ -150,7 +182,7 @@ struct AttachmentScoreView: View {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle(tint: .white))
                         } else {
-                            Text("추천 운동 강도 예측하기")
+                            Text("애정 점수 예측하기")
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
                         }
@@ -170,6 +202,13 @@ struct AttachmentScoreView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .task { // ✅ 최초 1회만 실행
+            if profiles.isEmpty {
+                let newProfile = DogProfile() // 기본값으로
+                context.insert(newProfile)
+                try? context.save()
+            }
+        }
     }
 }
 
@@ -239,9 +278,10 @@ struct AttachmentScoreView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             AttachmentScoreView(
-                initialBreedKorean: "진도",
-                initialBreedCode: "JIN"
+                viewModel: AttachmentScoreViewModel(),
+                profileViewModel: DogClassifierViewModel()
             )
         }
+        .modelContainer(for: [DogProfile.self], inMemory: true) // 프리뷰
     }
 }

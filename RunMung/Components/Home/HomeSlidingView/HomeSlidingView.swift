@@ -4,6 +4,7 @@
 //
 //  Created by 고래돌 on 9/16/25.
 //
+
 import SwiftUI
 
 struct HomeSlidingView: View {
@@ -17,45 +18,33 @@ struct HomeSlidingView: View {
                         // 카드 배경
                         RoundedRectangle(cornerRadius: 16)
                             .fill(Color.white)
-                            .shadow(color: .black.opacity(0.2), radius: 8, x: 2, y: 4) // 👈 카드 전체 그림자
+                            .shadow(color: .black.opacity(0.2), radius: 8, x: 2, y: 4)
                         
                         HStack(spacing: 0) {
                             GeometryReader { geo in
                                 HStack(spacing: 0) {
                                     // 왼쪽: 이미지 (1/3)
-                                    AsyncImage(url: URL(string: slide.imageURL)) { phase in
-                                        if let image = phase.image {
-                                            image
-                                                .resizable()
-                                                .interpolation(.high) // 고품질 보간
-                                                .antialiased(true)    // 계단 현상 줄이기
-                                                .scaledToFit()
-                                                .frame(width: geo.size.width / 3, height: 100)
-                                                .clipped()
-                                        } else if phase.error != nil {
-                                            Color.gray
-                                                .frame(width: geo.size.width / 3, height: 100)
-                                        } else {
-                                            ProgressView()
-                                                .frame(width: geo.size.width / 3, height: 100)
-                                        }
-                                    }
+                                    Image(slide.imageURL) // 👉 에셋 이름 사용
+                                        .resizable()
+                                        .interpolation(.high)
+                                        .antialiased(true)
+                                        .scaledToFit()
+                                        .frame(width: geo.size.width / 3, height: 100)
+                                        .clipped()
                                     
                                     // 오른쪽: 텍스트 (2/3)
                                     Text(slide.title)
                                         .font(.system(size: 18, weight: .light))
                                         .frame(width: geo.size.width * 2/3, height: 100)
-                                        .multilineTextAlignment(.center) // 👈 텍스트를 좌우 중앙 정렬
+                                        .multilineTextAlignment(.center)
                                 }
                             }
                         }
                         .frame(height: 100)
                         .padding(.horizontal, 16)
-
                     }
                     .padding()
                     .tag(index)
-
                 }
             }
             .tabViewStyle(.page)
