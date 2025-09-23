@@ -42,11 +42,17 @@ struct MainTabView: View {
                 .tag(3)
             
             // 설정
-            SettingView()
+            DogClassifierView()
                 .tabItem {
-                    Label("설정", systemImage: "gearshape.fill")
+                    Label("AI", systemImage: "dog.circle")
                 }
                 .tag(4)
+            
+//            SettingView()
+//                .tabItem {
+//                    Label("설정", systemImage: "gearshape.fill")
+//                }
+//                .tag(4)
         }
     }
 }

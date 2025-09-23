@@ -10,6 +10,7 @@ import Combine
 
 class DistanceTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var totalDistance: Double = 0.0
+    @Published var locations: [CLLocation] = []
     
     private var locationManager = CLLocationManager()
     private var lastLocation: CLLocation?
@@ -25,25 +26,30 @@ class DistanceTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.pausesLocationUpdatesAutomatically = false
         
-        // 산책 개선
-        locationManager.activityType = .fitness
+        locationManager.activityType = .fitness // 산책 옵션으로 선택
     }
     
+    // 세션 시작
     func start() {
         lastLocation = nil
         isTracking = true
+        locations.removeAll() // 세션 시작 시 초기화
+        totalDistance = 0.0
         locationManager.startUpdatingLocation()
     }
     
+    // 세션 일시정지 / 정지
     func stop() {
         isTracking = false
         locationManager.stopUpdatingLocation()
     }
     
+    // 세션 리셋
     func reset() {
         stop()
         totalDistance = 0.0
         lastLocation = nil
+        locations.removeAll()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -51,15 +57,13 @@ class DistanceTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         guard let newLocation = locations.last else { return }
         
         if let last = lastLocation {
-            // 미터 단위
-            let distance = newLocation.distance(from: last)
-            
-            // 1미터 미만의 작은 변화는 무시
+            let distance = newLocation.distance(from: last) // 미터 단위
             if distance > 1 {
                 totalDistance += distance / 1000.0 // km 단위 변환
             }
         }
         
+        self.locations.append(newLocation) // 위치 기록 추가
         lastLocation = newLocation
     }
 }

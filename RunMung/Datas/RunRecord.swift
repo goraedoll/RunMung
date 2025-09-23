@@ -15,6 +15,8 @@ class RunRecord {
     var elapsedTime: Double
     var pace: String
     
+    @Relationship(deleteRule: .cascade) var routePoints: [RunLocation] = []
+    
     init(date: Date, distance: Double, elapsedTime: Double, pace: String) {
         self.date = date
         self.distance = distance

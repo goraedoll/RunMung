@@ -58,7 +58,7 @@ public struct HomeActiveButtonView: View {
                 Button {
                     print("하단 버튼")
                 } label: {
-                    Text("AI")
+                    Text("산책 보기")
                         .font(.system(size: 18, weight: .light))
                         .foregroundColor(.black)
                         .frame(width: 20, height: 1)
