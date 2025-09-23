@@ -116,7 +116,7 @@ struct RecordView: View {
                         .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
                         .padding(.horizontal)
                         
-                        // ✅ 최근 기록 섹션
+                        // 최근 기록 섹션
                         VStack(alignment: .leading, spacing: 16) {
                             HStack {
                                 Text("최근 기록")

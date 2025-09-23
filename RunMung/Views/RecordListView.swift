@@ -12,6 +12,8 @@ struct RecordListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \RunRecord.date, order: .reverse) private var records: [RunRecord]
     
+    @State private var showDeleteAllAlert = false
+    
     private func formatElapsed(_ time: Double) -> String {
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
@@ -21,8 +23,20 @@ struct RecordListView: View {
     private func deleteRecord(at offsets: IndexSet) {
         for index in offsets {
             let record = records[index]
-            modelContext.delete(record)   // ✅ DB에서 삭제
+            modelContext.delete(record)
         }
+        try? modelContext.save()
+    }
+    
+    private func deleteAllRecords() {
+        for record in records {
+            modelContext.delete(record)
+        }
+        try? modelContext.save()
+    }
+    
+    private func insertSampleData() {
+        SampleDataLoader.insertSampleRuns(context: modelContext)
     }
     
     var body: some View {
@@ -50,9 +64,31 @@ struct RecordListView: View {
                 }
                 .padding(.vertical, 4)
             }
-            .onDelete(perform: deleteRecord)   // ✅ 스와이프 후 삭제 버튼 누르면 바로 삭제
+            .onDelete(perform: deleteRecord)
         }
         .navigationTitle("모든 기록")
+        .toolbar {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                // 샘플 데이터 추가
+                Button(action: insertSampleData) {
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundColor(.coral)
+                }
+                // 모든 기록 삭제
+                Button(role: .destructive) {
+                    showDeleteAllAlert = true
+                } label: {
+                    Image(systemName: "trash.fill")
+                }
+            }
+        }
+        .alert("모든 기록 삭제", isPresented: $showDeleteAllAlert) {
+            Button("삭제", role: .destructive) {
+                deleteAllRecords()
+            }
+            Button("취소", role: .cancel) {}
+        } message: {
+            Text("정말 모든 기록을 삭제하시겠습니까?")
+        }
     }
 }
-

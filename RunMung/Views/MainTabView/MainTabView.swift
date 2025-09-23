@@ -20,8 +20,8 @@ struct MainTabView: View {
                 }
                 .tag(0)
 
-            // 플랜
-            CameraView()
+            // 챗 화면
+            DogChatView()
                 .tabItem {
                     Label("AI", systemImage: "sparkles")
                 }
@@ -56,6 +56,8 @@ struct MainTabView: View {
         }
     }
 }
+
+
 
 #Preview("MainTabView") {
     MainTabView()

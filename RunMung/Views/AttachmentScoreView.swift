@@ -131,11 +131,17 @@ struct AttachmentScoreView: View {
                             }
                         } else {
                             Button("강아지 기본정보 만들기") {
-                                let newProfile = DogProfile()
-                                context.insert(newProfile)
-                                try? context.save()   // ✅ 저장
-                            }
-                            .padding()
+                                let newProfile = DogProfile(
+                                    gender: "M",
+                                    isNeutered: false,
+                                    ageRange: "성년",
+                                    age: 1,
+                                    environment: "실내",
+                                    size: "소형",
+                                    weightState: "정상"
+                                )
+                                try? context.save()
+                            }                            .padding()
                         }
 
                         // -------------------------
